@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "Bullet.h"
+#include "Enemy.h"
 
 #define PI 3.14159265
 
@@ -16,6 +17,9 @@ SDL_Renderer* renderer;
 SDL_Event Event;
 SDL_Texture *background,*character, *bullet, *enemy;
 SDL_Rect rect_background,rect_character, rect_bullet, rect_enemy;
+
+int screen_width = 500;
+int screen_height= 250;
 
 double getAngle(double distance_x, double distance_y)
 {
@@ -31,6 +35,24 @@ double getAngle(double distance_x, double distance_y)
     return angle;
 }
 
+bool isOutOfBounds(int x, int y)
+{
+    return x>screen_width || x<0 || y>screen_height || y<0;
+}
+
+bool collisionCheck(SDL_Rect r1, SDL_Rect r2)
+{
+    if(r1.x > r2.x+r2.w)//Muy a la derecha
+        return false;
+    if(r1.x+r1.w < r2.x)//Muy a la izquierda
+        return false;
+    if(r1.y > r2.y+r2.h)//Muy abajo
+        return false;
+    if(r1.y+r1.h < r2.y)//Muy arriba
+        return false;
+    return true;
+}
+
 int main( int argc, char* args[] )
 {
     //Init SDL
@@ -39,8 +61,6 @@ int main( int argc, char* args[] )
         return 10;
     }
     //Creates a SDL Window
-    int screen_width = 500;
-    int screen_height= 250;
     if((window = SDL_CreateWindow("Image Loading", 100, 100, screen_width/*WIDTH*/, screen_height/*HEIGHT*/, SDL_WINDOW_RESIZABLE | SDL_RENDERER_PRESENTVSYNC)) == NULL)
     {
         return 20;
@@ -84,6 +104,7 @@ int main( int argc, char* args[] )
     rect_enemy.h = h;
 
     list<Bullet*>bullets;
+    list<Enemy*>enemies;
     int frame=0;
 
     //Main Loop
@@ -127,6 +148,11 @@ int main( int argc, char* args[] )
             bullets.push_back(new Bullet(rect_character.x,rect_character.y,getAngle(dist_x,dist_y)));
         }
 
+        if(frame%100==0)
+        {
+            enemies.push_back(new Enemy(0,125));
+        }
+
         SDL_RenderCopy(renderer, background, NULL, &rect_background);
 
         for(list<Bullet*>::iterator i=bullets.begin();
@@ -140,8 +166,7 @@ int main( int argc, char* args[] )
             bullet_actual->x+=cos(-bullet_actual->angle*PI/180)*bullet_velocity;
             bullet_actual->y+=sin(-bullet_actual->angle*PI/180)*bullet_velocity;
 
-            if(bullet_actual->x>screen_width || bullet_actual->x<0
-               || bullet_actual->y>screen_height || bullet_actual->y<0)
+            if(isOutOfBounds(bullet_actual->x,bullet_actual->y))
             {
                 list<Bullet*>::iterator to_erase=i;
                 i--;
@@ -150,8 +175,59 @@ int main( int argc, char* args[] )
             }
         }
 
+        for(list<Enemy*>::iterator i=enemies.begin();
+            i!=enemies.end();
+            i++)
+        {
+            Enemy* current_enemy = *i;
+            current_enemy->x++;
+            rect_enemy.x = current_enemy->x;
+            rect_enemy.y = current_enemy->y;
+            SDL_RenderCopy(renderer, enemy, NULL, &rect_enemy);
+
+            if(isOutOfBounds(current_enemy->x,current_enemy->y))
+            {
+                list<Enemy*>::iterator to_erase=i;
+                i--;
+                enemies.erase(to_erase);
+                delete current_enemy;
+            }
+        }
+
         SDL_RenderCopy(renderer, character, NULL, &rect_character);
-        SDL_RenderCopy(renderer, enemy, NULL, &rect_enemy);
+
+        for(list<Enemy*>::iterator i=enemies.begin();
+            i!=enemies.end();
+            i++)
+        {
+            Enemy*current_enemy = *i;
+            for(list<Bullet*>::iterator j=bullets.begin();
+                j!=bullets.end();
+                j++)
+            {
+                Bullet*current_bullet = *j;
+
+                rect_enemy.x = current_enemy->x;
+                rect_enemy.y = current_enemy->y;
+
+                rect_bullet.x = current_bullet->x;
+                rect_bullet.y = current_bullet->y;
+
+                if(collisionCheck(rect_enemy,rect_bullet))
+                {
+                    list<Bullet*>::iterator to_erase=j;
+                    j--;
+                    bullets.erase(to_erase);
+                    delete current_bullet;
+
+                    list<Enemy*>::iterator to_erase_enemy=i;
+                    i--;
+                    enemies.erase(to_erase_enemy);
+                    delete current_enemy;
+                    break;
+                }
+            }
+        }
 
         SDL_RenderPresent(renderer);
         SDL_Delay(17);
