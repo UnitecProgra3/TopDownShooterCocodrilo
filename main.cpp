@@ -3,27 +3,33 @@
 #include<SDL2/SDL_image.h>
 #include<iostream>
 #include<list>
+#include <math.h>
+#include <stdlib.h>
+#include "Bullet.h"
+
+#define PI 3.14159265
 
 using namespace std;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Event Event;
-SDL_Texture *background,*character, *bullet;
-SDL_Rect rect_background,rect_character, rect_bullet;
+SDL_Texture *background,*character, *bullet, *enemy;
+SDL_Rect rect_background,rect_character, rect_bullet, rect_enemy;
 
-class Bullet
+double getAngle(double distance_x, double distance_y)
 {
-public:
-    int x;
-    int y;
-    Bullet(int x,int y)
+    double angle = atan (distance_y/distance_x) * 180 / PI;
+    if(distance_x<0)
     {
-        this->x=x;
-        this->y=y;
+        angle=180+angle;
     }
-};
-
+    if(distance_x>0 && distance_y<0)
+    {
+        angle=360+angle;
+    }
+    return angle;
+}
 
 int main( int argc, char* args[] )
 {
@@ -33,7 +39,9 @@ int main( int argc, char* args[] )
         return 10;
     }
     //Creates a SDL Window
-    if((window = SDL_CreateWindow("Image Loading", 100, 100, 500/*WIDTH*/, 250/*HEIGHT*/, SDL_WINDOW_RESIZABLE | SDL_RENDERER_PRESENTVSYNC)) == NULL)
+    int screen_width = 500;
+    int screen_height= 250;
+    if((window = SDL_CreateWindow("Image Loading", 100, 100, screen_width/*WIDTH*/, screen_height/*HEIGHT*/, SDL_WINDOW_RESIZABLE | SDL_RENDERER_PRESENTVSYNC)) == NULL)
     {
         return 20;
     }
@@ -68,10 +76,19 @@ int main( int argc, char* args[] )
     rect_bullet.w = w;
     rect_bullet.h = h;
 
+    enemy = IMG_LoadTexture(renderer, "enemy.png");
+    SDL_QueryTexture(enemy, NULL, NULL, &w, &h);
+    rect_enemy.x = 0;
+    rect_enemy.y = 100;
+    rect_enemy.w = w;
+    rect_enemy.h = h;
+
     list<Bullet*>bullets;
     int frame=0;
 
     //Main Loop
+    double player_velocity=3;
+    double bullet_velocity=8;
     while(true)
     {
         while(SDL_PollEvent(&Event))
@@ -85,33 +102,32 @@ int main( int argc, char* args[] )
         const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
         if( currentKeyStates[ SDL_SCANCODE_UP ] )
         {
-            rect_character.y-=1;
+            rect_character.y-=player_velocity;
         }
         if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
         {
-            rect_character.y+=1;
+            rect_character.y+=player_velocity;
         }
         if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
         {
-            rect_character.x+=1;
+            rect_character.x+=player_velocity;
         }
         if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
         {
-            rect_character.x-=1;
+            rect_character.x-=player_velocity;
         }
 
-        int x, y;
-        SDL_GetMouseState( &x, &y );
-        cout<<x<<endl;
-        cout<<y<<endl;
-        rect_bullet.x=x;
-        rect_bullet.y=y;
+        int mouse_x, mouse_y;
+        SDL_GetMouseState( &mouse_x, &mouse_y );
 
         if(frame%30==0)
-            bullets.push_back(new Bullet(rect_character.x,rect_character.y));
+        {
+            double dist_x = mouse_x - rect_character.x;
+            double dist_y = rect_character.y - mouse_y;
+            bullets.push_back(new Bullet(rect_character.x,rect_character.y,getAngle(dist_x,dist_y)));
+        }
 
         SDL_RenderCopy(renderer, background, NULL, &rect_background);
-        SDL_RenderCopy(renderer, character, NULL, &rect_character);
 
         for(list<Bullet*>::iterator i=bullets.begin();
             i!=bullets.end();
@@ -121,8 +137,11 @@ int main( int argc, char* args[] )
             rect_bullet.x=bullet_actual->x;
             rect_bullet.y=bullet_actual->y;
             SDL_RenderCopy(renderer, bullet, NULL, &rect_bullet);
-            bullet_actual->x+=3;
-            if(bullet_actual->x>500)
+            bullet_actual->x+=cos(-bullet_actual->angle*PI/180)*bullet_velocity;
+            bullet_actual->y+=sin(-bullet_actual->angle*PI/180)*bullet_velocity;
+
+            if(bullet_actual->x>screen_width || bullet_actual->x<0
+               || bullet_actual->y>screen_height || bullet_actual->y<0)
             {
                 list<Bullet*>::iterator to_erase=i;
                 i--;
@@ -130,6 +149,9 @@ int main( int argc, char* args[] )
                 delete bullet_actual;
             }
         }
+
+        SDL_RenderCopy(renderer, character, NULL, &rect_character);
+        SDL_RenderCopy(renderer, enemy, NULL, &rect_enemy);
 
         SDL_RenderPresent(renderer);
         SDL_Delay(17);
