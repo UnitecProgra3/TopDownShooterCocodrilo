@@ -562,23 +562,33 @@
 	<SDL2/SDL_image.h>
 	<iostream>
 
-1463165239 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
-	<SDL2/SDL.h>
-	<SDL2/SDL_image.h>
+1463770555 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
 	<iostream>
 	<list>
-	<math.h>
 	<stdlib.h>
 	"Bullet.h"
 	"Enemy.h"
+	"Player.h"
 
-1463161813 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Bullet.cpp
+1463769822 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Bullet.cpp
 	"Bullet.h"
 
-1463161779 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Bullet.h
+1463769809 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Bullet.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<math.h>
 
-1463162380 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Enemy.cpp
+1463769220 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Enemy.cpp
 	"Enemy.h"
 
-1463162351 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Enemy.h
+1463768917 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Enemy.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+
+1463770456 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.cpp
+	"Player.h"
+
+1463770437 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
 

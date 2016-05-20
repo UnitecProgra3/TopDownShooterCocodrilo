@@ -1,14 +1,10 @@
 
-#include<SDL2/SDL.h>
-#include<SDL2/SDL_image.h>
 #include<iostream>
 #include<list>
-#include <math.h>
 #include <stdlib.h>
 #include "Bullet.h"
 #include "Enemy.h"
-
-#define PI 3.14159265
+#include "Player.h"
 
 using namespace std;
 
@@ -89,13 +85,6 @@ int main( int argc, char* args[] )
     rect_character.w = w;
     rect_character.h = h;
 
-    bullet = IMG_LoadTexture(renderer, "bullet.png");
-    SDL_QueryTexture(bullet, NULL, NULL, &w, &h);
-    rect_bullet.x = 0;
-    rect_bullet.y = 100;
-    rect_bullet.w = w;
-    rect_bullet.h = h;
-
     enemy = IMG_LoadTexture(renderer, "enemy.png");
     SDL_QueryTexture(enemy, NULL, NULL, &w, &h);
     rect_enemy.x = 0;
@@ -109,7 +98,8 @@ int main( int argc, char* args[] )
 
     //Main Loop
     double player_velocity=3;
-    double bullet_velocity=8;
+    double last_frame_ticks=SDL_GetTicks();
+    Player *player = new Player(30,30,3,renderer);
     while(true)
     {
         while(SDL_PollEvent(&Event))
@@ -120,37 +110,19 @@ int main( int argc, char* args[] )
             }
         }
 
-        const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
-        if( currentKeyStates[ SDL_SCANCODE_UP ] )
-        {
-            rect_character.y-=player_velocity;
-        }
-        if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
-        {
-            rect_character.y+=player_velocity;
-        }
-        if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
-        {
-            rect_character.x+=player_velocity;
-        }
-        if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
-        {
-            rect_character.x-=player_velocity;
-        }
-
         int mouse_x, mouse_y;
         SDL_GetMouseState( &mouse_x, &mouse_y );
 
         if(frame%30==0)
         {
-            double dist_x = mouse_x - rect_character.x;
-            double dist_y = rect_character.y - mouse_y;
-            bullets.push_back(new Bullet(rect_character.x,rect_character.y,getAngle(dist_x,dist_y)));
+            double dist_x = mouse_x - player->rect.x;
+            double dist_y = player->rect.y - mouse_y;
+            bullets.push_back(new Bullet(player->rect.x,player->rect.y,getAngle(dist_x,dist_y),8,renderer));
         }
 
         if(frame%100==0)
         {
-            enemies.push_back(new Enemy(0,125));
+            enemies.push_back(new Enemy(0,rand()%screen_height-rect_enemy.h,renderer));
         }
 
         SDL_RenderCopy(renderer, background, NULL, &rect_background);
@@ -160,11 +132,9 @@ int main( int argc, char* args[] )
             i++)
         {
             Bullet* bullet_actual = *i;
-            rect_bullet.x=bullet_actual->x;
-            rect_bullet.y=bullet_actual->y;
-            SDL_RenderCopy(renderer, bullet, NULL, &rect_bullet);
-            bullet_actual->x+=cos(-bullet_actual->angle*PI/180)*bullet_velocity;
-            bullet_actual->y+=sin(-bullet_actual->angle*PI/180)*bullet_velocity;
+
+            bullet_actual->logic();
+            bullet_actual->draw();
 
             if(isOutOfBounds(bullet_actual->x,bullet_actual->y))
             {
@@ -180,10 +150,9 @@ int main( int argc, char* args[] )
             i++)
         {
             Enemy* current_enemy = *i;
-            current_enemy->x++;
-            rect_enemy.x = current_enemy->x;
-            rect_enemy.y = current_enemy->y;
-            SDL_RenderCopy(renderer, enemy, NULL, &rect_enemy);
+
+            current_enemy->logic();
+            current_enemy->draw();
 
             if(isOutOfBounds(current_enemy->x,current_enemy->y))
             {
@@ -194,7 +163,8 @@ int main( int argc, char* args[] )
             }
         }
 
-        SDL_RenderCopy(renderer, character, NULL, &rect_character);
+        player->logic();
+        player->draw();
 
         for(list<Enemy*>::iterator i=enemies.begin();
             i!=enemies.end();
@@ -230,7 +200,14 @@ int main( int argc, char* args[] )
         }
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(17);
+        double current_ticks = SDL_GetTicks();
+        double ticks_diff = current_ticks-last_frame_ticks;
+        double sleep_time = 17-ticks_diff;
+        //cout<<ticks_diff<<","<<sleep_time<<endl;
+        last_frame_ticks=SDL_GetTicks();
+        if(sleep_time>0)
+            SDL_Delay(sleep_time);
+
         frame++;
     }
 
