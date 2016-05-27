@@ -99,7 +99,7 @@ int main( int argc, char* args[] )
     //Main Loop
     double player_velocity=3;
     double last_frame_ticks=SDL_GetTicks();
-    Player *player = new Player(30,30,3,renderer);
+    Player *player = new Player(30,30,1,renderer);
     while(true)
     {
         while(SDL_PollEvent(&Event))

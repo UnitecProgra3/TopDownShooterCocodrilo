@@ -3,6 +3,11 @@
 
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_image.h>
+#include<iostream>
+#include<map>
+#include<vector>
+
+using namespace std;
 
 class Player
 {
@@ -10,13 +15,18 @@ class Player
         double x;
         double y;
         double velocity;
-        SDL_Texture *texture;
+        map<string, vector<SDL_Texture*> > textures;
         SDL_Rect rect;
         SDL_Renderer *renderer;
+        string current_animation;
+        int current_animation_frame;
+        int frame;
+        int animation_frequency;
         Player(double x,double y, double velocity,SDL_Renderer* renderer);
         void logic();
         void draw();
         virtual ~Player();
+        void animationLogic();
     protected:
     private:
 };

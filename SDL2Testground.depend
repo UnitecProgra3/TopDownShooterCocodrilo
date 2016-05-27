@@ -562,7 +562,7 @@
 	<SDL2/SDL_image.h>
 	<iostream>
 
-1463770555 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
+1464371642 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
 	<iostream>
 	<list>
 	<stdlib.h>
@@ -585,10 +585,13 @@
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 
-1463770456 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.cpp
+1464371584 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.cpp
 	"Player.h"
 
-1463770437 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.h
+1464371432 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
+	<iostream>
+	<map>
+	<vector>
 
