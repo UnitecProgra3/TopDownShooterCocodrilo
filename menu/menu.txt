@@ -1,0 +1,4 @@
+menu/menu_bg2.png
+iniciar 20 100
+instrucciones 20 150
+salir 20 200

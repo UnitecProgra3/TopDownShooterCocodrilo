@@ -562,13 +562,14 @@
 	<SDL2/SDL_image.h>
 	<iostream>
 
-1464371642 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
+1464979761 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
 	<iostream>
 	<list>
 	<stdlib.h>
 	"Bullet.h"
 	"Enemy.h"
 	"Player.h"
+	"Menu.h"
 
 1463769822 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Bullet.cpp
 	"Bullet.h"
@@ -585,7 +586,7 @@
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 
-1464371584 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.cpp
+1464371666 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.cpp
 	"Player.h"
 
 1464371432 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Player.h
@@ -594,4 +595,12 @@
 	<iostream>
 	<map>
 	<vector>
+
+1464980455 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Menu.cpp
+	"Menu.h"
+
+1464980017 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Menu.h
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<fstream>
 

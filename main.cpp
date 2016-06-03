@@ -5,6 +5,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "Menu.h"
 
 using namespace std;
 
@@ -100,6 +101,10 @@ int main( int argc, char* args[] )
     double player_velocity=3;
     double last_frame_ticks=SDL_GetTicks();
     Player *player = new Player(30,30,1,renderer);
+
+    Menu menu(renderer);
+    menu.loop();
+
     while(true)
     {
         while(SDL_PollEvent(&Event))
