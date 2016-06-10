@@ -1,4 +1,5 @@
-menu/menu_bg2.png
-iniciar 20 100
-instrucciones 20 150
-salir 20 200
+image menu/menu_bg.png 0 0
+button start 20 100
+button instructions 20 150
+button exit 20 200
+text Shooterest 30 10

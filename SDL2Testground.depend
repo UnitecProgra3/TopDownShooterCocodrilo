@@ -562,7 +562,7 @@
 	<SDL2/SDL_image.h>
 	<iostream>
 
-1464979761 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
+1465581499 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/main.cpp
 	<iostream>
 	<list>
 	<stdlib.h>
@@ -596,11 +596,14 @@
 	<map>
 	<vector>
 
-1464980455 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Menu.cpp
+1465581653 source:/home/turupawn/Clases/Progra3/SDL2TestSimple-master/Menu.cpp
 	"Menu.h"
 
-1464980017 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Menu.h
+1465581580 /home/turupawn/Clases/Progra3/SDL2TestSimple-master/Menu.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
+	<SDL2/SDL_ttf.h>
 	<fstream>
+	<vector>
+	<iostream>
 

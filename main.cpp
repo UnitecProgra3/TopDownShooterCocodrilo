@@ -70,6 +70,11 @@ int main( int argc, char* args[] )
         return 30;
     }
 
+    if( TTF_Init() == -1 )
+    {
+        printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+    }
+
     //Init textures
     int w=0,h=0;
     background = IMG_LoadTexture(renderer,"fondo.png");
@@ -102,7 +107,7 @@ int main( int argc, char* args[] )
     double last_frame_ticks=SDL_GetTicks();
     Player *player = new Player(30,30,1,renderer);
 
-    Menu menu(renderer);
+    Menu menu(renderer,"menu/menu.txt");
     menu.loop();
 
     while(true)
